@@ -6,5 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 public interface PostRepository extends MongoRepository<Post, String>{
+	Post findBy_id(String _id);
 
 }

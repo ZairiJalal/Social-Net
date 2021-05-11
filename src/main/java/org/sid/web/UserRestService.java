@@ -1,12 +1,15 @@
 package org.sid.web;
  
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List; import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.sid.entities.AppRole;
 import org.sid.entities.AppUser;
 import org.sid.repository.AppUserRepository;
+import org.sid.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.web.bind.annotation.CrossOrigin; 
 import org.springframework.web.bind.annotation.PathVariable; 
@@ -23,29 +26,29 @@ import lombok.Data;
   
   public class UserRestService {
   
-  @Autowired private AppUserRepository userRepository;
+	  @Autowired private AppUserRepository userRepository;
+  @Autowired private AccountService accountService;
+  
+  
+  @RequestMapping(value = "/users/register", method = RequestMethod.POST) 
+  public AppUser saveUser(@RequestBody AppUser c){   	  
+		  accountService.addNewUser(c); 
+		  return c;
+  }
+  
   
   @RequestMapping(value = "/users", method = RequestMethod.GET) 
   public List<AppUser> getUsers(){ 
 	  return userRepository.findAll(); 
   }
-  @RequestMapping(value = "/tst", method = RequestMethod.GET) 
-  public String tst(){ 
-	  return "test valid"; 
-  }
-  
+ 
   
   @RequestMapping(value = "/users/{id}", method = RequestMethod.GET) 
-  public Optional<AppUser> getUser(@PathVariable String id){
+  public AppUser getUser(@PathVariable String id){
 	  return userRepository.findBy_id(id);
   }
   
-  @RequestMapping(value = "/users", method = RequestMethod.POST) 
-  public AppUser saveUser(@RequestBody AppUser c){ 
-	   AppUser u = userRepository.save(c); 
-	   u.setIdUser(u.get_id());	   
-	   return u;
-  }
+ 
   
   @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE) 
   public boolean deleteUser(@PathVariable String id){ 
@@ -55,46 +58,41 @@ import lombok.Data;
   
   @RequestMapping(value = "/users/{id}", method = RequestMethod.PUT) 
   public AppUser editeUser(@PathVariable String id , @RequestBody AppUser c){ 
-	  AppUser u = userRepository.findByIdUser(id);
+	  AppUser u = userRepository.findBy_id(id);
 	  u.set_id(id); 
 	  return  userRepository.save(c); 
   } 
   @RequestMapping(value = "/users/follow", method = RequestMethod.PUT) 
   public AppUser followUser(@RequestBody Follow f){ 	  
 
-		/*
-		 * AppUser user1 = userRepository.findByUsername(f.getUsername1()); AppUser
-		 * user2 = userRepository.findByUsername(f.getUsername2());
-		 * 
-		 * List<String> list = user1.getFriendsList(); for(int i=0;i<list.size();i++) {
-		 * if(list.get(i).equals(user2.get_id())) {
-		 * 
-		 * return user1; }
-		 * 
-		 * } list.add(user2.get_id()); user1.setFriendsList(list); return
-		 * userRepository.save(user1);
-		 */
-	  return null;
+		System.out.println(f.getIduser1());
+		System.out.println(f.getIduser2());
+		
+	  AppUser user1 = userRepository.findBy_id(f.getIduser1());
+	  AppUser user2 = userRepository.findBy_id(f.getIduser2());
+	  
+	  List<String> list = user1.getFollowersList(); 
+	  for(int i=0;i<list.size();i++) {		  		  
+		  if(list.get(i).equals(user2.get_id()))
+			  return null;
+	  }
+			  
+		 
+	  list.add(user2.get_id()); 
+	  user1.setFollowersList(list); 
+	  
+	  List<String> list2 = user2.getFollowingsList(); 
+	  list2.add(user1.get_id());
+	  user2.setFollowingsList(list2); 
+	  userRepository.save(user2); 
+	  return userRepository.save(user1);
   } 
-  @RequestMapping(value = "/users/unfollow ", method = RequestMethod.PUT) 
-  public AppUser unfollowUser(@RequestBody Follow f){ 
-		/*
-		 * System.out.println(f.getUsername1()); System.out.println(f.getUsername2());
-		 * AppUser user1 = userRepository.findByUsername(f.getUsername1()); AppUser
-		 * user2 = userRepository.findByUsername(f.getUsername2()); List<String> list =
-		 * user1.getFriendsList(); for(int i=0;i<list.size();i++) {
-		 * if(list.get(i).equals(user2.get_id())) { System.out.println(list.get(i));
-		 * System.out.println(user2.get_id()); System.out.println("------------------");
-		 * list.remove(i); }
-		 * 
-		 * } user1.setFriendsList(list); return userRepository.save(user1);
-		 */ return null;
-  } 
+ 
  }
   @Data
   class Follow {
-	  private String username1;
-	  private String username2;
+	  private String iduser1;
+	  private String iduser2;
 	  
   }
  

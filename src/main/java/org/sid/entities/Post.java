@@ -2,6 +2,7 @@ package org.sid.entities;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class Post {
 	
 	@Id
     private String _id;
+	private String idPost;
     private String descripton;
     private String picture;
     private Date date = new Date();

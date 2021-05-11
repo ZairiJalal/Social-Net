@@ -4,6 +4,7 @@ package org.sid.entities;
 
 
 
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,13 +13,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Document
-@Data @AllArgsConstructor @NoArgsConstructor
-public class Message {
+@Data @NoArgsConstructor @AllArgsConstructor
+public class AppRole {
 	@Id
-    private String id;
-    private Integer senderId;
-    private Integer reseverId; 
-    private String date;
-    private String text;
-
+       private String _id;
+       private String roleName;
 }
+
