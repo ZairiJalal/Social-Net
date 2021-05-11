@@ -29,6 +29,10 @@ import lombok.Data;
   public List<AppUser> getUsers(){ 
 	  return userRepository.findAll(); 
   }
+  @RequestMapping(value = "/tst", method = RequestMethod.GET) 
+  public String tst(){ 
+	  return "test valid"; 
+  }
   
   
   @RequestMapping(value = "/users/{id}", method = RequestMethod.GET) 
