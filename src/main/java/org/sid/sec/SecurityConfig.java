@@ -44,10 +44,7 @@ import  org.springframework.security.authentication.AuthenticationManager;
 	  auth.userDetailsService(new UserDetailsService() {
 		  
 		  @Override public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException { 
-			  System.out.println("hnnnnnnnnnnnnnnnnnnnna");
 			  AppUser appUser = appUserRepository.findByUsername(username);
-			  System.out.println(appUser.getUsername());
-			  System.out.println("lhiiiiiiiiiiiiiiiiiiih");
 			  Collection<GrantedAuthority>  authorities= new ArrayList<>();
 			  appUser.getAppRoles().forEach(r->{		 
 				  authorities.add(new SimpleGrantedAuthority(r.getRoleName())); });
@@ -61,7 +58,7 @@ import  org.springframework.security.authentication.AuthenticationManager;
 	  http.csrf().disable();
 	  http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	  http.headers().frameOptions().disable();
-	  http.authorizeRequests().antMatchers("/Users/**","/Comments","/v2/api-docs","/Posts/**","/login","/refreshToken/**").permitAll();
+	  http.authorizeRequests().antMatchers("/","/Users/**","/Comments","/v2/api-docs","/Posts/**","/login","/refreshToken/**").permitAll();
 
 	  http.authorizeRequests().anyRequest().authenticated();
 	  http.addFilter(new JWTAuthenticationFilter(authenticationManagerBean()));
