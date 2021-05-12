@@ -27,42 +27,47 @@ import lombok.Data;
   public class UserRestService {
   
 	  @Autowired private AppUserRepository userRepository;
-  @Autowired private AccountService accountService;
+	  @Autowired private AccountService accountService;
   
   
-  @RequestMapping(value = "/users/register", method = RequestMethod.POST) 
+  @RequestMapping(value = "/Users/register", method = RequestMethod.POST) 
   public AppUser saveUser(@RequestBody AppUser c){   	  
 		  accountService.addNewUser(c); 
 		  return c;
   }
   
   
-  @RequestMapping(value = "/users", method = RequestMethod.GET) 
+  @RequestMapping(value = "/Users", method = RequestMethod.GET) 
   public List<AppUser> getUsers(){ 
 	  return userRepository.findAll(); 
   }
- 
-  
-  @RequestMapping(value = "/users/{id}", method = RequestMethod.GET) 
+  @RequestMapping(value = "/Users/{id}", method = RequestMethod.GET) 
   public AppUser getUser(@PathVariable String id){
 	  return userRepository.findBy_id(id);
   }
   
- 
+  @RequestMapping(value = "/Users/followers/{id}", method = RequestMethod.GET) 
+  public List<AppUser> followersUsers(@PathVariable String id){ 
+	  return accountService.followersListUsers(id); 
+  }
+  @RequestMapping(value = "/Users/followings/{id}", method = RequestMethod.GET) 
+  public List<AppUser> followingsUsers(@PathVariable String id){ 
+	  return accountService.followingsListUsers(id); 
+  }
   
-  @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE) 
+  @RequestMapping(value = "/Users/{id}", method = RequestMethod.DELETE) 
   public boolean deleteUser(@PathVariable String id){ 
 	  userRepository.deleteById(id);
       return true; 
   }
   
-  @RequestMapping(value = "/users/{id}", method = RequestMethod.PUT) 
+  @RequestMapping(value = "/Users/{id}", method = RequestMethod.PUT) 
   public AppUser editeUser(@PathVariable String id , @RequestBody AppUser c){ 
 	  AppUser u = userRepository.findBy_id(id);
 	  u.set_id(id); 
 	  return  userRepository.save(c); 
   } 
-  @RequestMapping(value = "/users/follow", method = RequestMethod.PUT) 
+  @RequestMapping(value = "/Users/follow", method = RequestMethod.PUT) 
   public AppUser followUser(@RequestBody Follow f){ 	  
 
 		System.out.println(f.getIduser1());

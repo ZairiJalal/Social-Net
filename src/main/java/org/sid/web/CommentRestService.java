@@ -19,27 +19,31 @@ import org.springframework.web.bind.annotation.RestController;
   
   @Autowired private CommentRepository commentRepository; 
   
-  @RequestMapping(value = "/comments", method = RequestMethod.GET) 
+  @RequestMapping(value = "/Comments", method = RequestMethod.GET) 
   public List<Comment> getComments(){ return commentRepository.findAll(); }
   
   
-  @RequestMapping(value = "/comments/{id}", method = RequestMethod.GET) 
+  @RequestMapping(value = "/Comments/{id}", method = RequestMethod.GET) 
   public Optional<Comment> getMComment(@PathVariable String id){ 
 	  return commentRepository.findById(id);
   }
+  @RequestMapping(value = "/Comments/postCurrent/{id}", method = RequestMethod.GET) 
+  public List<Comment> getMMComment(@PathVariable String id){ 
+	  return commentRepository.findByUserId(id);
+  }
   
-  @RequestMapping(value = "/comments", method = RequestMethod.POST) 
+  @RequestMapping(value = "/Comments", method = RequestMethod.POST) 
   public Comment saveComment(@RequestBody Comment c){ 
 	  return commentRepository.save(c); 
   }
   
-  @RequestMapping(value = "/comments/{id}", method = RequestMethod.DELETE) 
+  @RequestMapping(value = "/Comments/{id}", method = RequestMethod.DELETE) 
   public boolean deleteComment(@PathVariable String id){ 
 	  commentRepository.deleteById(id);
       return true; 
   }
   
-  @RequestMapping(value = "/comments/{id}", method = RequestMethod.PUT) 
+  @RequestMapping(value = "/Comments/{id}", method = RequestMethod.PUT) 
   public Comment editeComment(@PathVariable String id , @RequestBody Comment c){ 
 	  c.set_id(id); 
 	  return  commentRepository.save(c); 

@@ -19,7 +19,6 @@ public class Post {
 	
 	@Id
     private String _id;
-	private String idPost;
     private String descripton;
     private String picture;
     private Date date = new Date();

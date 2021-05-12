@@ -61,7 +61,7 @@ import  org.springframework.security.authentication.AuthenticationManager;
 	  http.csrf().disable();
 	  http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	  http.headers().frameOptions().disable();
-	  http.authorizeRequests().antMatchers("/users/**","/v2/api-docs","/posts/**","/login","/refreshToken/**").permitAll();
+	  http.authorizeRequests().antMatchers("/Users/**","/Comments","/v2/api-docs","/Posts/**","/login","/refreshToken/**").permitAll();
 
 	  http.authorizeRequests().anyRequest().authenticated();
 	  http.addFilter(new JWTAuthenticationFilter(authenticationManagerBean()));

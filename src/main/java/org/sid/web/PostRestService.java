@@ -7,6 +7,7 @@ import org.sid.entities.AppUser;
 import org.sid.entities.Post;
 import org.sid.repository.AppUserRepository;
 import org.sid.repository.PostRepository;
+import org.sid.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,35 +27,28 @@ public class PostRestService {
 	@Autowired
 	private PostRepository postRepository;
 	@Autowired private AppUserRepository userRepository;
+	@Autowired private AccountService accountService;
 
-	/*
-	 * @RequestMapping(value = "/mmm ", method = RequestMethod.GET) public String
-	 * mmmm(){
-	 * 
-	 * 
-	 * 
-	 * AppUser user1 = userRepository.findByUsername(f.getUsername1()); AppUser
-	 * user2 = userRepository.findByUsername(f.getUsername2()); List<String> list =
-	 * user1.getFollowersList(); System.out.println(list); for(int
-	 * i=0;i<list.size();i++) {
-	 * 
-	 * if(list.get(i).equals(user2.get_id())) { System.out.println(list.get(i));
-	 * 
-	 * System.out.println(user2.get_id()); System.out.println("------------------");
-	 * 
-	 * list.remove(i); }
-	 * 
-	 * } user1.setFollowersList(list); return userRepository.save(user1);
-	 * 
-	 * 
-	 * return null; }
-	 */
-	@RequestMapping(value = "/posts", method = RequestMethod.GET)
+	
+	@RequestMapping(value = "/Posts", method = RequestMethod.GET)
 	public List<Post> getPosts() {
 		return postRepository.findAll();
 	}
 	
-	@RequestMapping(value = "/posts/like", method = RequestMethod.PUT)
+	@RequestMapping(value = "/Posts/userCurrent/{id}", method = RequestMethod.GET)
+	public List<Post> getuserCurrentPosts(@PathVariable String id) {
+		return postRepository.findByUserId(id);
+	}
+	@RequestMapping(value = "/Posts/followers/{id}", method = RequestMethod.GET)
+	public List<Post> getfollowersPosts(@PathVariable String id) {
+		return accountService.followersListPost(id);
+	}
+	@RequestMapping(value = "/Posts/followings/{id}", method = RequestMethod.GET)
+	public List<Post> getfollowingsPosts(@PathVariable String id) {
+		return accountService.followingsListPost(id);
+	}
+	
+	@RequestMapping(value = "/Posts/like", method = RequestMethod.PUT)
 	public Post likePost(@RequestBody Like l) {
 		System.out.println(l.getIdPost());
 		System.out.println(l.getUsername());
@@ -73,24 +67,24 @@ public class PostRestService {
 		  return postRepository.save(post);
 	}
 
-	@RequestMapping(value = "/posts/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/Posts/{id}", method = RequestMethod.GET)
 	public Optional<Post> getPost(@PathVariable String id) {
 		return postRepository.findById(id);
 	}
 
-	@RequestMapping(value = "/posts", method = RequestMethod.POST)
+	@RequestMapping(value = "/Posts", method = RequestMethod.POST)
 	public Post savePost(@RequestBody Post c) {
 		System.out.println(c.getDescripton());
 		return postRepository.save(c);
 	}
 
-	@RequestMapping(value = "/posts/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/Posts/{id}", method = RequestMethod.DELETE)
 	public boolean deletePost(@PathVariable String id) {
 		postRepository.deleteById(id);
 		return true;
 	}
 
-	@RequestMapping(value = "/posts/{id}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/Posts/{id}", method = RequestMethod.PUT)
 	public Post editePost(@PathVariable String id, @RequestBody Post c) {
 		c.set_id(id);
 		return postRepository.save(c);

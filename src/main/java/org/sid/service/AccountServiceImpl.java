@@ -6,8 +6,10 @@ import java.util.Set;
 
 import org.sid.entities.AppRole;
 import org.sid.entities.AppUser;
+import org.sid.entities.Post;
 import org.sid.repository.AppRoleRepository;
 import org.sid.repository.AppUserRepository;
+import org.sid.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired 
 	private AppUserRepository appUserRepository;
     @Autowired
-     private AppRoleRepository appRoleRepository;
+    private AppRoleRepository appRoleRepository;
+    @Autowired
+    private PostRepository postRepository;
     @Autowired
 	 private PasswordEncoder passwordEncoder;
 	 
@@ -52,6 +56,46 @@ public class AccountServiceImpl implements AccountService {
      public List<AppUser> listUsers() {
            return appUserRepository.findAll();
      }
+	@Override
+	public List<AppUser> followersListUsers(String id) {
+		AppUser appUser = appUserRepository.findBy_id(id);
+		List<String> list = appUser.getFollowersList();
+		List<AppUser> listAppUser = new ArrayList<AppUser>();
+		for(int i=0;i<list.size();i++) {
+			listAppUser.add(appUserRepository.findBy_id(list.get(i)));
+		}
+		return listAppUser;
+	}
+	@Override
+	public List<AppUser> followingsListUsers(String id) {
+		AppUser appUser = appUserRepository.findBy_id(id);
+		List<String> list = appUser.getFollowingsList();
+		List<AppUser> listAppUser = new ArrayList<AppUser>();
+		for(int i=0;i<list.size();i++) {
+			listAppUser.add(appUserRepository.findBy_id(list.get(i)));
+		}
+		return listAppUser;
+	}
+	@Override
+	public List<Post> followersListPost(String id) {
+		AppUser appUser = appUserRepository.findBy_id(id);
+		List<String> list = appUser.getFollowersList();
+		List<Post> listPost = new ArrayList<Post>();
+		for(int i=0;i<list.size();i++) {
+			listPost.addAll(postRepository.findByUserId(list.get(i)));
+		}
+		return listPost;
+	}
+	@Override
+	public List<Post> followingsListPost(String id) {
+		AppUser appUser = appUserRepository.findBy_id(id);
+		List<String> list = appUser.getFollowingsList();
+		List<Post> listPost = new ArrayList<Post>();
+		for(int i=0;i<list.size();i++) {
+			listPost.addAll(postRepository.findByUserId(list.get(i)));
+		}
+		return listPost;
+	}
 }
 
 
