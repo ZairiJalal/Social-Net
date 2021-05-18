@@ -1,7 +1,11 @@
 package org.sid.web;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.sid.entities.AppUser;
 import org.sid.entities.Post;
@@ -9,12 +13,19 @@ import org.sid.repository.AppUserRepository;
 import org.sid.repository.PostRepository;
 import org.sid.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import lombok.Data;
 
@@ -39,14 +50,7 @@ public class PostRestService {
 	public List<Post> getuserCurrentPosts(@PathVariable String id) {
 		return postRepository.findByUserId(id);
 	}
-	@RequestMapping(value = "/Posts/followers/{id}", method = RequestMethod.GET)
-	public List<Post> getfollowersPosts(@PathVariable String id) {
-		return accountService.followersListPost(id);
-	}
-	@RequestMapping(value = "/Posts/followings/{id}", method = RequestMethod.GET)
-	public List<Post> getfollowingsPosts(@PathVariable String id) {
-		return accountService.followingsListPost(id);
-	}
+	
 	
 	@RequestMapping(value = "/Posts/like", method = RequestMethod.PUT)
 	public Post likePost(@RequestBody Like l) {
@@ -73,9 +77,27 @@ public class PostRestService {
 	}
 
 	@RequestMapping(value = "/Posts", method = RequestMethod.POST)
-	public Post savePost(@RequestBody Post c) {
-		System.out.println(c.getDescripton());
-		return postRepository.save(c);
+	public Post savePost(
+			@RequestParam("userId") String userId,
+			@RequestParam(value = "descripton",required = false) String descripton,
+			@RequestParam(value = "picture",required = false) MultipartFile picture) throws IOException {
+		Post p = new Post();
+		p.setDescripton(descripton);
+		p.setUserId(userId);
+		if(picture!=null)
+		p.setPicture(picture.getBytes());
+		postRepository.save(p);
+		if(picture!=null) {
+		
+			String fileDownloadUri = ServletUriComponentsBuilder
+	            .fromCurrentContextPath()
+	            .path("/Posts/picture/")
+	            .path(p.get_id())
+	            .toUriString();
+		
+			p.setPictureUrl(fileDownloadUri);
+			}
+		return postRepository.save(p);
 	}
 
 	@RequestMapping(value = "/Posts/{id}", method = RequestMethod.DELETE)
@@ -85,10 +107,34 @@ public class PostRestService {
 	}
 
 	@RequestMapping(value = "/Posts/{id}", method = RequestMethod.PUT)
-	public Post editePost(@PathVariable String id, @RequestBody Post c) {
-		c.set_id(id);
-		return postRepository.save(c);
+	public Post editePost(
+			@PathVariable String id,
+			@RequestParam(value = "descripton",required = false) String descripton,
+			@RequestParam(value = "picture",required = false) MultipartFile picture) throws IOException {
+		Post p = postRepository.findBy_id(id);
+		if(descripton!=null)
+			p.setDescripton(descripton);
+		if(picture!=null){
+			p.setPicture(picture.getBytes());
+        	String fileDownloadUri = ServletUriComponentsBuilder
+		            .fromCurrentContextPath()
+		            .path("/Posts/picture/")
+		            .path(p.get_id())
+		            .toUriString();
+			p.setPictureUrl(fileDownloadUri);				
+		}
+			return postRepository.save(p);
+			
 	}
+	 @GetMapping("/Posts/picture/{id}")
+	  public ResponseEntity<byte[]> getPictrure(@PathVariable String id) throws IOException{
+		  Post p = postRepository.findById(id).get();
+
+	    return ResponseEntity.ok()
+	    		.contentType(MediaType.IMAGE_PNG)
+	        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "post" + "\"")
+	        .body(p.getPicture());
+	  }
 }
 @Data
 class Like {
