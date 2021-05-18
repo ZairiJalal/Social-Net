@@ -5,6 +5,7 @@ import java.util.List;
 import org.sid.entities.AppRole;
 import org.sid.entities.AppUser;
 import org.sid.entities.Post;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface AccountService {
       AppUser addNewUser(AppUser appUser);

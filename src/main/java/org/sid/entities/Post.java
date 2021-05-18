@@ -2,9 +2,10 @@ package org.sid.entities;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
+import javax.websocket.Decoder.Binary;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,7 +21,7 @@ public class Post {
 	@Id
     private String _id;
     private String descripton;
-    private String picture;
+    private Binary picture;
     private Date date = new Date();
     private List<String> likes = new ArrayList<>();
 	private String userId;

@@ -4,7 +4,6 @@ package org.sid.entities;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 

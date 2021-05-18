@@ -3,21 +3,16 @@
   
   import java.util.ArrayList;
   import java.util.Collection; 
-  import java.util.stream.Collectors;
-  
-  import javax.servlet.Filter;
+
   
   import org.sid.entities.AppUser;
 import org.sid.filtres.JWTAuthenticationFilter;
 import org.sid.filtres.JWTAuthorizationFilter;
 import org.sid.repository.AppUserRepository;
-/*  import org.sid.filtres.JWTAuthenticationFilter;
-	  import org.sid.filtres.JWTAuthorizationFilter;*/
   import org.sid.service.AccountService; 
   import  org.springframework.beans.factory.annotation.Autowired;
   import  org.springframework.context.annotation.Bean; 
   import  org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import  org.springframework.security.authentication.AuthenticationManager; 
   import  org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
   import  org.springframework.security.config.annotation.web.builders.HttpSecurity;

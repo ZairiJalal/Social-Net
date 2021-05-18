@@ -1,8 +1,8 @@
 package org.sid.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.sid.entities.AppRole;
 import org.sid.entities.AppUser;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -35,6 +36,10 @@ public class AccountServiceImpl implements AccountService {
 			
 			  String pw=appUser.getPassword(); 
 			  appUser.setPassword(passwordEncoder.encode(pw));
+				/*
+				 * try { appUser.setPictureData(appUser.getPicture().getBytes()); } catch
+				 * (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+				 */
 			  return appUserRepository.save(appUser);
 			  
      }

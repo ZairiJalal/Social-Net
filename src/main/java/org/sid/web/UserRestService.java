@@ -1,27 +1,53 @@
 package org.sid.web;
  
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List; import java.util.Optional;
 
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Transparency;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.List;
+import java.nio.file.Path;
+import org.springframework.core.io.UrlResource;
+
+
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.ImageIcon;
 
-import org.sid.entities.AppRole;
+import org.bson.BsonBinarySubType;
+import org.bson.types.Binary;
 import org.sid.entities.AppUser;
 import org.sid.repository.AppUserRepository;
 import org.sid.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin; 
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody; 
 import org.springframework.web.bind.annotation.RequestMapping; 
-import org.springframework.web.bind.annotation.RequestMethod; 
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 
 import lombok.Data;
   
@@ -33,25 +59,54 @@ import lombok.Data;
   
 	  @Autowired private AppUserRepository userRepository;
 	  @Autowired private AccountService accountService;
-  
+	  private final Path fileStorageLocation = null;
+
+	 
   
   @RequestMapping(value = "/Users/register", method = RequestMethod.POST) 
-  public AppUser saveUser(@RequestBody AppUser c){   	  
+  public AppUser saveUser(@RequestBody AppUser c){  
+
 		  accountService.addNewUser(c); 
 		  return c;
   }
-  
-  @PostMapping("/Users/registerr")
-  public ResponseEntity<AppUser> addActualite(@RequestBody AppUser c){
+  @RequestMapping(value = "/Users/picture/{id}", method = RequestMethod.PUT) 
+  public AppUser pictureUser(@RequestParam("file") MultipartFile file,@PathVariable String id){  
 
-      HttpHeaders header =new HttpHeaders();
-		/*
-		 * URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-		 * .path("/{id}").buildAndExpand(actualite.getId()).toUri();
-		 * header.setLocation(location);
-		 */
-      return new ResponseEntity<>(accountService.addNewUser(c),header,HttpStatus.CREATED);
+	  AppUser appUser = userRepository.findBy_id(id);
+		  try {
+			appUser.setPicture(file.getBytes());
+			String fileDownloadUri = ServletUriComponentsBuilder
+		            .fromCurrentContextPath()
+		            .path("/Users/picture/")
+		            .path(id)
+		            .toUriString();
+			appUser.setPictureUrl(fileDownloadUri);
+		    
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  return userRepository.save(appUser);
   }
+  @GetMapping("/Users/picture/{id}")
+  public ResponseEntity<byte[]> getPictrure(@PathVariable String id,HttpServletRequest request) throws IOException{
+	  AppUser appUser = userRepository.findById(id).get();
+
+    return ResponseEntity.ok()
+    		.contentType(MediaType.IMAGE_PNG)
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + appUser.getUsername() + "\"")
+        .body(appUser.getPicture());
+  }
+  
+	/*
+	 * @PostMapping("/Users/registerr") public ResponseEntity<AppUser>
+	 * addActualite(@RequestBody MultipartFile multipart) throws IOException{
+	 * AppUser c = new AppUser(); c.setPassword("2345"); HttpHeaders header =new
+	 * HttpHeaders(); c.setPicture(new Binary(BsonBinarySubType.BINARY,
+	 * multipart.getBytes())); return new
+	 * ResponseEntity<>(accountService.addNewUser(c),header,HttpStatus.CREATED); }
+	 */
+
   
   
   @RequestMapping(value = "/Users", method = RequestMethod.GET) 
@@ -80,8 +135,7 @@ import lombok.Data;
   
   @RequestMapping(value = "/Users/{id}", method = RequestMethod.PUT) 
   public AppUser editeUser(@PathVariable String id , @RequestBody AppUser c){ 
-	  AppUser u = userRepository.findBy_id(id);
-	  u.set_id(id); 
+	  c.set_id(id); 
 	  return  userRepository.save(c); 
   } 
   @RequestMapping(value = "/Users/follow", method = RequestMethod.PUT) 
