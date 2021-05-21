@@ -23,7 +23,7 @@ public class Post {
 	
 	@Id
     private String _id;
-    private String descripton;
+    private String description;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private byte[]  picture;
    	private String  pictureUrl;

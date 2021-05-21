@@ -79,10 +79,11 @@ public class PostRestService {
 	@RequestMapping(value = "/Posts", method = RequestMethod.POST)
 	public Post savePost(
 			@RequestParam("userId") String userId,
-			@RequestParam(value = "descripton",required = false) String descripton,
+			@RequestParam(value = "description",required = false) String description,
 			@RequestParam(value = "picture",required = false) MultipartFile picture) throws IOException {
 		Post p = new Post();
-		p.setDescripton(descripton);
+		if(description!=null)
+		p.setDescription(description);
 		p.setUserId(userId);
 		if(picture!=null)
 		p.setPicture(picture.getBytes());
@@ -109,11 +110,11 @@ public class PostRestService {
 	@RequestMapping(value = "/Posts/{id}", method = RequestMethod.PUT)
 	public Post editePost(
 			@PathVariable String id,
-			@RequestParam(value = "descripton",required = false) String descripton,
+			@RequestParam(value = "description",required = false) String description,
 			@RequestParam(value = "picture",required = false) MultipartFile picture) throws IOException {
 		Post p = postRepository.findBy_id(id);
-		if(descripton!=null)
-			p.setDescripton(descripton);
+		if(description!=null)
+			p.setDescription(description);
 		if(picture!=null){
 			p.setPicture(picture.getBytes());
         	String fileDownloadUri = ServletUriComponentsBuilder
