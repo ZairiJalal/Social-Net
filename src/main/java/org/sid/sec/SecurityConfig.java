@@ -39,10 +39,13 @@ import  org.springframework.security.authentication.AuthenticationManager;
 	  auth.userDetailsService(new UserDetailsService() {
 		  
 		  @Override public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException { 
+			
 			  AppUser appUser = appUserRepository.findByUsername(username);
 			  Collection<GrantedAuthority>  authorities= new ArrayList<>();
-			  appUser.getAppRoles().forEach(r->{		 
-				  authorities.add(new SimpleGrantedAuthority(r.getRoleName())); });
+				/*
+				 * appUser.getAppRoles().forEach(r->{ authorities.add(new
+				 * SimpleGrantedAuthority(r.getRoleName())); });
+				 */
 			  return new  User(appUser.getUsername(), appUser.getPassword(), authorities);
 			  } 
 		  }); 

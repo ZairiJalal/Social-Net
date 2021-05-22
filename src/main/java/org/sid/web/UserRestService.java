@@ -59,7 +59,6 @@ import lombok.Data;
   
 	  @Autowired private AppUserRepository userRepository;
 	  @Autowired private AccountService accountService;
-	  private final Path fileStorageLocation = null;
 
 	 
   
