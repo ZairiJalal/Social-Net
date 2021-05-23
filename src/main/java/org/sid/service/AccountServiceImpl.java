@@ -55,7 +55,7 @@ public class AccountServiceImpl implements AccountService {
      }
      @Override
      public AppUser loadUserByUsername(String username) { 
-    	   return appUserRepository.findByUsername(username);
+    	   return appUserRepository.findByEmail(username);
      }
      @Override
      public List<AppUser> listUsers() {
