@@ -39,15 +39,15 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 	  auth.userDetailsService(new UserDetailsService() {
 		  
-		  @Override public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException { 
+		  @Override public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { 
 			
-			  AppUser appUser = appUserRepository.findByUsername(username);
+			  AppUser appUser = appUserRepository.findByUsername(email);
 			  Collection<GrantedAuthority>  authorities= new ArrayList<>();
 				/*
 				 * appUser.getAppRoles().forEach(r->{ authorities.add(new
 				 * SimpleGrantedAuthority(r.getRoleName())); });
 				 */
-			  return new  User(appUser.getUsername(), appUser.getPassword(), authorities);
+			  return new  User(appUser.getEmail(), appUser.getPassword(), authorities);
 			  } 
 		  }); 
   }
