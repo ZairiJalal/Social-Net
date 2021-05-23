@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 		  
 		  @Override public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { 
 			
-			  AppUser appUser = appUserRepository.findByUsername(email);
+			  AppUser appUser = appUserRepository.findByEmail(email);
 			  Collection<GrantedAuthority>  authorities= new ArrayList<>();
 				/*
 				 * appUser.getAppRoles().forEach(r->{ authorities.add(new
