@@ -61,7 +61,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 	  http.authorizeRequests().antMatchers("/","/Users/**","/Comments","/v2/api-docs","/Posts/**","/login","/refreshToken/**").permitAll();
 
 	  http.authorizeRequests().anyRequest().authenticated();
-	  http.addFilter(new JWTAuthenticationFilter(authenticationManagerBean()));
+	  http.addFilter(new JWTAuthenticationFilter(authenticationManagerBean(), appUserRepository));
 	  http.addFilterBefore(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 	   
   }

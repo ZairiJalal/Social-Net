@@ -8,7 +8,9 @@
   import javax.servlet.http.HttpServletRequest; import
   javax.servlet.http.HttpServletResponse;
   
-  import org.sid.entities.AppUser; import
+  import org.sid.entities.AppUser;
+import org.sid.repository.AppUserRepository;
+import
   org.springframework.security.authentication.AuthenticationManager; import
   org.springframework.security.authentication.
   UsernamePasswordAuthenticationToken; import
@@ -24,10 +26,14 @@
   public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
   
   private AuthenticationManager authenticationManager;
+  private AppUserRepository appUserRepository;
   
-  public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+  public JWTAuthenticationFilter(AuthenticationManager authenticationManager
+		  ,AppUserRepository appUserRepository) {
   
 	  this.authenticationManager = authenticationManager;
+	  this.appUserRepository = appUserRepository;
+	  
 	  }
   
   @Override public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -41,18 +47,16 @@
   @Override protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
 	  
 	  User authenticatedUser= (User)authResult.getPrincipal();
+	  AppUser appuser = appUserRepository.findByEmail(request.getParameter("email"));
 	  Algorithm algorithm=Algorithm.HMAC256("myHMACPrivateKey"); 
 	  String jwtAccessToken= JWT
 			  .create()
-			  .withSubject(authenticatedUser.getUsername())
+			  .withSubject(appuser.get_id())
 			  .withExpiresAt(new Date(System.currentTimeMillis()+50*60*1000)) 
 			  .withIssuer(request.getRequestURL().toString())
-			  .withClaim("roles",authenticatedUser
-					  .getAuthorities()
-					  .stream()
-					  .map((a)->a
-							  .getAuthority())
-					  .collect(Collectors.toList()))
+			  .withClaim("id",appuser.get_id())
+			  .withClaim("email",appuser.getEmail())
+			  .withClaim("username", appuser.getUsername())
 			  .sign(algorithm); 
 	  String jwtRefreshToken= JWT 
 			  .create() 
