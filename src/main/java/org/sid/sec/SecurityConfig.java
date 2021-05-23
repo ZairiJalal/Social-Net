@@ -40,7 +40,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 	  auth.userDetailsService(new UserDetailsService() {
 		  
 		  @Override public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { 
-			
+			System.out.println("-----------------------");
+			  System.out.println(email);
 			  AppUser appUser = appUserRepository.findByEmail(email);
 			  Collection<GrantedAuthority>  authorities= new ArrayList<>();
 				/*

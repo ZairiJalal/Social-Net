@@ -31,12 +31,11 @@
 	  }
   
   @Override public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-		System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
 
 	  AppUser appUser=new AppUser();
-	  appUser.setUsername(request.getParameter("username")); 
+	  appUser.setEmail(request.getParameter("email")); 
 	  appUser.setPassword(request.getParameter("password")); 
-	  return   authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUser.getUsername(),appUser.getPassword())); 
+	  return   authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUser.getEmail(),appUser.getPassword())); 
 	  }
   
   @Override protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
